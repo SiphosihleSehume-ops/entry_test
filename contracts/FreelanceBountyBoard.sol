@@ -40,6 +40,12 @@ contract FreelanceBountyBoard {
     //   amount, status) A struct is a good fit here.
     // - How do you remember who applied for which bounty?
 
+    // MY variables
+    mapping(address => bool) public registered;
+
+    // FReelancers
+    mapping(address => string) public freelancerSkills;
+
     constructor() {
         owner = msg.sender;
     }
@@ -53,7 +59,16 @@ contract FreelanceBountyBoard {
     // - Revert if the skill string is empty
     // - Emit FreelancerRegistered(msg.sender, skill)
     function registerFreelancer(string calldata skill) external {
-        // Your implementation here
+        require(!registered[msg.sender], "Freelancer already exists");
+
+        require(bytes(skill).length > 0, "Skills cannot be empty");
+
+        registered[msg.sender] = true;
+
+        freelancerSkills[msg.sender] = skill;
+
+        emit FreelancerRegistered(msg.sender, skill);
+
     }
 
     // -----------------------------------------------------------------------
@@ -73,7 +88,22 @@ contract FreelanceBountyBoard {
         payable
         returns (uint256)
     {
-        // Your implementation here
+        require(msg.value > 0. "Bounty must exceed zero")'
+
+        bountyCount++;
+
+        bounties[bountyCount] = Bounty({
+            employer: msg.sender,
+            description: description,
+            skillsRequired: skillRequired,
+            amount: msg.value,
+            status: Status.open
+        });
+
+
+        emit BountyPosted(bountyCount, msg.sender, msg.value);
+
+        return bountyCount;
     }
 
     // -----------------------------------------------------------------------
@@ -135,12 +165,12 @@ contract FreelanceBountyBoard {
 
     /// @notice The skill this freelancer registered with ("" if unregistered)
     function getSkill(address freelancer) external view returns (string memory) {
-        // Your implementation here
+        return freelancerSkills[freelancer];
     }
 
     /// @notice True if this freelancer applied for this bounty
     function hasApplied(uint256 bountyId, address freelancer) external view returns (bool) {
-        // Your implementation here
+        return applications[bountyId][freelancer];
     }
 
     /// @notice All of a bounty's details, in this exact order
@@ -155,7 +185,15 @@ contract FreelanceBountyBoard {
             Status status
         )
     {
-        // Your implementation here
+        Bounty memory bounty = bounties[bountyId];
+
+        return (
+            bounty.employer,
+            bounty.description,
+            bounty.skillsRequired,
+            bounty.amount,
+            bounty.status
+        );
     }
 
     // BONUS (not auto-marked, describe it in PartB_Design.md instead):
