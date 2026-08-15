@@ -84,25 +84,19 @@ contract DecentralisedRaffle {
     function enterRaffle() external payable {
         require(msg.value >= MINIMUM_ENTRY, "Insufficient funds join this draw");
 
-        if (isPaused) {
-            revert EnforcePaused();
-        }
-
-        // Extract a single count for single player
-        uint256 entryCount = msg.value / MINIMUM_ENTRY;
-
-        // Record a single entry 
-        entries[msg.sender] += entryCount;
-
-        // Theni update total entries
-        totalEntries += entryCount;
-
-        // Caller new round
+       // Caller new round
         if (entries[msg.sender] == 0) {
             players.push(msg.sender);
         }
 
-        emit RaffleEntered(msg.sender, entryCount);
+        // Record a single entry 
+        entries[msg.sender] += 1;
+
+        // Theni update total entries
+        totalEntries += 1;
+
+
+        emit RaffleEntered(msg.sender, entries[msg.sender]);
     }
 
     // -----------------------------------------------------------------------
@@ -199,14 +193,15 @@ contract DecentralisedRaffle {
     // - Owner only, both functions
     // - Set isPaused, and emit RafflePaused() / RaffleUnpaused()
     function pause() external onlyOwner {
-        isPaused = !isPaused;
-        emit State(isPaused);
+        isPaused = true;
+
         emit RafflePaused();
     }
 
     function unpause() external onlyOwner {
-        isPaused = isPaused;
-        emit State(isPaused);
+        isPaused = false;
+
+        emit RafflePaused();
     }
 
     // -----------------------------------------------------------------------
@@ -220,17 +215,18 @@ contract DecentralisedRaffle {
 
     /// @notice How many entries this player has bought this round
     function getEntryCount(address player) external view returns (uint256) {
-        //
+        return entries[player];
     }
 
     /// @notice Total number of entries this round, counting repeats
     function getPlayerCount() external view returns (uint256) {
-        return players.length;
+        return totalEntries;
     }
 
     /// @notice Number of distinct addresses that have entered this round
     function getUniquePlayerCount() external view returns (uint256) {
-       //
+       // damn! logic mismatch. al;ways relax man.
+       return players.length;
     }
 
     // BONUS (not auto-marked, describe it in PartB_Design.md instead):

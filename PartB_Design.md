@@ -36,7 +36,7 @@ I used a variable to keep track of the number of times called entryCount, which 
   would go wrong without those checks?
 - **Input validation:** what did you reject, and where?
 
-[Write your response here]
+[]
 
 ---
 
