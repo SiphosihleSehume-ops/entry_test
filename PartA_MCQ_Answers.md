@@ -56,11 +56,10 @@ database?"*
 - **D)** "Because a database can only handle a few thousand users, and
   blockchains scale infinitely."
 
-**Your Answer:** [A/B/C/D]
+**Your Answer:** B
 
 **Your Reasoning:**
-[2-3 sentences. What is the actual property a blockchain provides here? Name one
-honest cost of choosing it.]
+[Blockchain provides security, transparency and immutability. Once the records are inserted into the database, no single person or authority can alter the records. The honest cost of choosing it is complexity; blockchain-based applications often seem too complex for non-tech savvy individuals. ]
 
 ---
 
@@ -79,16 +78,15 @@ You send a simple ETH transfer on Ethereum.
 - **C)** 0.00042 ETH (about $1.26)
 - **D)** 0.0042 ETH (about $12.60)
 
-**Your Answer:** [A/B/C/D]
+**Your Answer:** C
 
 **Your Calculation:**
 
-- Total gas cost in gwei = [show your working]
-- Converted to ETH (remember: 1 ETH = 1,000,000,000 gwei) = [show your working]
-- Converted to USD = [show your working]
+- Total gas cost in gwei = 21,000 * 20 = 420,000 gwei
+- Converted to ETH (remember: 1 ETH = 1,000,000,000 gwei) = 420,000 / 1,000,000,000 = 0.00042 ETH
+- Converted to USD = 0.00042 * 3000 = $1.26 
 
-[Then, in one or two sentences: why does a smart contract function that writes
-to storage cost far more than this simple transfer?]
+[It costs more gas fees to store on a blockchain because every node on the network needs to store the same copy of the data making expensive relative to the size of the blockchain.]
 
 ---
 
@@ -109,12 +107,10 @@ Your smart contract needs to know the current ETH/USD price.
   in a future upgrade.
 - **D)** Because API providers block blockchain nodes for security reasons.
 
-**Your Answer:** [A/B/C/D]
+**Your Answer:** B
 
 **Your Reasoning:**
-[2-3 sentences. Why would a single company running the only oracle undermine the
-point of building on a blockchain? What does a decentralised oracle network do
-about that?]
+[A blockchain is isolated from the from the rest of the world. Adding external data directly on-chain undermines the problem blockchain is trying to solve; central authority. Oracle solves this problem by aggregating the data to have one source of truth, verifying and applying consensus machanisms to ensure that data from off-chain is validated and free from bias when brought on chain. ]
 
 ---
 
@@ -133,11 +129,10 @@ about that?]
   attacker their own stake. The cost of that stake is also what makes Sybil
   attacks - one actor spinning up thousands of fake nodes - uneconomic.
 
-**Your Answer:** [A/B/C/D]
+**Your Answer:** D
 
 **Your Reasoning:**
-[2-3 sentences. What does an attacker actually need to acquire to threaten a PoS
-chain, and what do they stand to lose? Name one difference from Proof of Work.]
+[An attacker would need a ton amount of resources adn by resources I mean an insane amount of money amounting to high billions if not trllions given the size of the Ethereum blockchain community which is very much infisible. So 49/51 attack done by a single person or a small group of individuals is highly infisible. Proof of Work, as opposed to PoS, can be achieved by a single individual. The more mining power (powerful computers and graphic cards/processors), the more blocks an individual can mine. A monopoly is possible in Proof of Work consensus, given you have the resources. ]
 
 ---
 
@@ -157,11 +152,10 @@ chain, and what do they stand to lose? Name one difference from Proof of Work.]
 - **D)** It reduces gas costs by lowering the base fee on Ethereum itself
   whenever the rollup is active.
 
-**Your Answer:** [A/B/C/D]
+**Your Answer:** A
 
 **Your Reasoning:**
-[2-3 sentences. Most rollups today run a single centralised sequencer. What can
-that sequencer do to you, and what can it *not* do?]
+[A sequencer can order executions and even process transactions off-chain individually. What a sequencer cannot do is making final decisions on its own. It provide its own final security and the important one for users is that it cannot steal user funds.]
 
 ---
 
@@ -184,12 +178,11 @@ them.
 - **D)** The seed phrase is just a backup of your public address, which is why it
   is safe to share with support staff if you get stuck.
 
-**Your Answer:** [A/B/C/D]
+**Your Answer:** C
 
 **Your Reasoning:**
-[2-3 sentences. What does a signature prove? What is the trade-off a user accepts
-by holding their own keys, and what does account abstraction do to soften it?]
-
+[ A signature prooves that you are the person who is actually interacting with the smart contract; it serves as you digital identity. By holding your own keys, you are in control of the activities you perform when interacting with the smart contract; everthing  points to you as an individual. This prevents fraudulent activities being done on your behalve without your consent; literally the power is in your hands. Account abstraction helps by removing rigid private key rules thus enhancing user experience. So in essense, the smart contract controls user accounts instead of a user private key.]
+     
 ---
 
 ## PART 2: Applying It To Your Contracts
@@ -223,12 +216,10 @@ uint256 index = uint256(
 - **D)** It is insecure on Ethereum but safe on a Layer 2, because the sequencer
   orders transactions privately.
 
-**Your Answer:** [A/B/C/D]
+**Your Answer:** B
 
 **Your Reasoning:**
-[2-3 sentences. Who specifically can manipulate this draw, and what would they
-have to do? You will implement this shortcut in Part B anyway - so be clear
-about what you are shipping.]
+[This transaction will be visible publicly before the event/transaction takes place, as a result front-runners can manipulate the draw. The front-runner, since they get to see the draw before it plays out, they will choose their winner and mainipulate the `block.timestamp` as well as the `block.prevrandao` to force the maths logic to select their chosen block as the winner. ]
 
 ---
 
@@ -262,11 +253,10 @@ function approveAndPay(uint256 bountyId, address freelancer) external {
 - **D)** The `require` on `msg.sender` should use `tx.origin` instead, so that
   contracts cannot call the function at all.
 
-**Your Answer:** [A/B/C/D]
+**Your Answer:** C
 
 **Your Reasoning:**
-[2-3 sentences. Walk through the exact sequence an attacking contract would use.
-Then apply the fix in your own `approveAndPay` - it is auto-marked.]
+[An attacker would receive the function runs during the call and can intercept it by calling the `approveAndPay` multiple times. This leads to contract drainage since the status is only being updated once after performing the transaction. ]
 
 ---
 
@@ -279,5 +269,4 @@ Then apply the fix in your own `approveAndPay` - it is auto-marked.]
 
 ---
 
-**Challenges faced:** [What was difficult? Which concepts are you least
-confident about? Answering this honestly does not cost you marks.]
+**Challenges faced:** [Question 8 was a bit tricky for me. I used the answer from the MCQ to find my way in explaining the steps an attacking contract would use. More practice and writing more contracts will definitely result in tremendeous growth. Otherwise the MCQs this time are clear to me, given I have already been exposed to this assessment and used it mostly to prepare for this one. ]
