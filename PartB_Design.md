@@ -23,7 +23,8 @@ is finished does not.
   three times the chance of winning?
 - How did you count unique players separately from total entries?
 
-[Write your response here]
+[I used mapping inside my `decentralizedRaffle` contract and I needed an array to store my raffle participant i.e. players. 
+I used a variable to keep track of the number of times called entryCount, which I got by dividing the value from the caller (msg.sender) with the `minimumEntry`. Sinced I used `mapping` to store all of my players, I incremented the value stored (which is number of entries) with the `entryCount` variable I created. finally, I emit my `RaffleEntered` event and place my `entryCount` and place the caller as key and entry count as value. By iterating through my palyers array and inspecting whether a player's entry count is equivalent to 3.]
 
 ---
 
