@@ -38,6 +38,16 @@ contract DecentralisedRaffle {
     //   address simply appears more than once, which gives them better odds.
     // - You also need the number of UNIQUE players, for the 3-player minimum.
     // - The pot is just this contract's balance.
+    mapping(address => uint256) public entries;
+    address[] public entryAddresses;
+    uint256 constant MIN_PLAYERS = 3;
+    // pot
+    uint256 constant potSize = 1000;
+
+    // Event types\
+    event Players(address player, uint256 raffleId);
+    event WinnerSelected(address winner, uint256 prize);
+    event State(bool state);
 
     constructor() {
         owner = msg.sender;
@@ -66,8 +76,26 @@ contract DecentralisedRaffle {
     // - If this is the caller's first ever entry this round, they are a new
     //   unique player
     // - Emit RaffleEntered(msg.sender, <this player's total entries so far>)
+
+    // Error-type response if is paused
+    error EnforcePaused();
+
     function enterRaffle() external payable {
-        // Your implementation here
+        require(msg.value >= MINIMUM_ENTRY, "Insufficient funds join this draw");
+
+        if (isPaused) {
+            revert EnforcePaused();
+        }
+
+        // Extract a single count for single player
+        uint256 entryCount = msg.value / MINIMUM_ENTRY;
+
+        // Record a single entry 
+        entries[msg.sender] += entryCount;
+
+        // Theni update total entries
+
+
     }
 
     // -----------------------------------------------------------------------
