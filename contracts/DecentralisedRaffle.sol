@@ -39,10 +39,11 @@ contract DecentralisedRaffle {
     // - You also need the number of UNIQUE players, for the 3-player minimum.
     // - The pot is just this contract's balance.
     mapping(address => uint256) public entries;
-    address[] public entryAddresses;
+    address[] public players;
     uint256 constant MIN_PLAYERS = 3;
     // pot
     uint256 constant potSize = 1000;
+    uint256 totalEntries;
 
     // Event types\
     event Players(address player, uint256 raffleId);
@@ -94,8 +95,14 @@ contract DecentralisedRaffle {
         entries[msg.sender] += entryCount;
 
         // Theni update total entries
+        totalEntries += entryCount;
 
+        // Caller new round
+        if (entries[msg.sender] == 0) {
+            players.push(msg.sender);
+        }
 
+        emit RaffleEntered(msg.sender, entryCount);
     }
 
     // -----------------------------------------------------------------------
