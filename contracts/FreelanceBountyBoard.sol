@@ -119,7 +119,34 @@ contract FreelanceBountyBoard {
     // Hint: Solidity cannot compare strings with ==. Compare hashes instead:
     //   keccak256(bytes(a)) == keccak256(bytes(b))
     function applyForBounty(uint256 bountyId) external {
-        // Your implementation here
+        require(registered[msg.sender], "Freelancer not registered");
+        require(
+            bountyId > 0 && bountyId <= bountyCount,
+            "Bounty does not exist"
+        );
+        require(
+            bounties[bountyId].status == Status.Open,
+            "Bounty not open"
+        );
+
+        require(
+            keccak256(bytes(freelancerSkills[msg.sender])) ==
+            keccak256(bytes(bounties[bountyId].skillsRequired)),
+            "Skill does not match"
+        );
+
+        require(
+            !applications[bountyId][msg.sender],
+            "Already applied"
+        );
+
+        applications[bountyId][msg.sender] = true;
+
+        emit AppliedForBounty(
+            bountyId,
+            msg.sender
+        );
+
     }
 
     // -----------------------------------------------------------------------
@@ -131,7 +158,29 @@ contract FreelanceBountyBoard {
     // - Set the bounty's status to Submitted
     // - Emit WorkSubmitted(bountyId, msg.sender, submissionUrl)
     function submitWork(uint256 bountyId, string calldata submissionUrl) external {
-        // Your implementation here
+        require(
+            bountyId > 0 && bountyId <= bountyCount,
+            "Bounty does not exist"
+        );
+
+        require(
+            applications[bountyId][msg.sender],
+            "You did not apply"
+        );
+
+        require(
+            bounties[bountyId].status == Status.Open,
+            "Bounty not open"
+        );
+
+        bounties[bountyId].status = Status.Submitted;
+
+        emit WorkSubmitted(
+            bountyId,
+            msg.sender,
+            submissionUrl
+        );
+
     }
 
     // -----------------------------------------------------------------------
@@ -151,7 +200,41 @@ contract FreelanceBountyBoard {
     //     require(ok, "Transfer failed");
     // rather than transfer() or send().
     function approveAndPay(uint256 bountyId, address freelancer) external {
-        // Your implementation here
+        require(
+            bountyId > 0 && bountyId <= bountyCount,
+            "Bounty does not exist"
+        );
+
+        require(
+            bounties[bountyId].employer == msg.sender,
+            "Only employer can approve"
+        );
+
+        require(
+            bounties[bountyId].status == Status.Submitted,
+            "Bounty not submitted"
+        );
+
+        require(
+            applications[bountyId][freelancer],
+            "Freelancer did not apply"
+        );
+
+        uint256 amount = bounties[bountyId].amount;
+
+        // Checks-Effects-Interactions:
+        // Change state BEFORE sending ETH.
+        bounties[bountyId].status = Status.Completed;
+
+        (bool ok, ) = freelancer.call{value: amount}("");
+        require(ok, "Transfer failed");
+
+        emit BountyPaid(
+            bountyId,
+            freelancer,
+            amount
+        );
+
     }
 
     // -----------------------------------------------------------------------
